@@ -1,7 +1,25 @@
-import React from 'react'
+import React, { useState } from 'react'
+import ConfigButton from './ConfigButton/ConfigButton'
+import SettingsModal from './Modals/SettingsModal'
 
 const Navbar = () => {
+  const [ShowSettings, setShowSettings] = useState(false); // TODO: Usar para mostrar modal de configuración
+
+  const handleOpenSettings = () => {
+    setShowSettings(true);
+  };
+
+  const handleCloseSettings = () => {
+    setShowSettings(false);
+  };
+
+  const handleBackgroundChange = (background) => {
+    console.log('Fondo cambiado a:', background);
+    // TODO: Aplicar el fondo a la app
+  };
+
   return (
+    <>
     <nav 
       style={{
         backgroundColor: 'rgba(255, 255, 255, 0.1)',
@@ -24,19 +42,8 @@ const Navbar = () => {
 
           {/* Menú de navegación */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-            {/* Botón de configuración temporal */}
-            <button 
-              style={{
-                backgroundColor: 'rgba(255, 255, 255, 0.2)',
-                color: 'white',
-                padding: '8px 16px',
-                borderRadius: '8px',
-                border: 'none',
-                cursor: 'pointer'
-              }}
-            >
-              Configuración
-            </button>
+            <ConfigButton onOpenSettings={handleOpenSettings} />
+            <SettingsModal isOpen={ShowSettings} onClose={handleCloseSettings} />
             
             {/* Dropdown de Autenticación */}
             <button 
@@ -55,6 +62,14 @@ const Navbar = () => {
         </div>
       </div>
     </nav>
+
+    {/* Modal de configuración */}
+    <SettingsModal 
+      isOpen={ShowSettings} 
+      onClose={handleCloseSettings}
+      onBackgroundChange={handleBackgroundChange}
+    />
+  </>
   )
 }
 
