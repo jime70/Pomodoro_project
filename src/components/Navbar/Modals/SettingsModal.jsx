@@ -2,8 +2,9 @@
 // TODO: Implementar modal que integre BackgroundConfig, TimeConfig y MusicConfig
 import React from "react";
 import BackgroundConfig from '../ConfigButton/BackgroundConfig';
+import TimeConfig from '../ConfigButton/TimeConfig';
 
-const SettingsModal = ({ isOpen, onClose, onBackgroundChange }) => {
+const SettingsModal = ({ isOpen, onClose, onBackgroundChange, onDurationChange }) => {
   //Si el modal no está abierto, no se muestra
   if (!isOpen) return null;
 
@@ -70,6 +71,7 @@ const SettingsModal = ({ isOpen, onClose, onBackgroundChange }) => {
         </div>
         <div>
           <BackgroundConfig onBackgroundChange={onBackgroundChange} />
+          <TimeConfig onDurationChange={onDurationChange} />
           
           {/* Aquí van las otras configuraciones... */}
           <p style={{ textAlign: 'center', color: '#6b7280', marginTop: '32px' }}>
