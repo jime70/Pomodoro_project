@@ -8,14 +8,18 @@ const BackgroundConfig = ({ onBackgroundChange }) => {
     const savedBackground = localStorage.getItem('backgroundTheme');
     if (savedBackground) {
       setSelectedBackground(savedBackground);
-      onBackgroundChange(savedBackground); // Aplicar el fondo guardado
+      if (onBackgroundChange && typeof onBackgroundChange === 'function') {
+        onBackgroundChange(savedBackground); // Aplicar el fondo guardado
+      }
     }
   }, [onBackgroundChange]);
 
   const handleBackgroundChange = (background) => {
     setSelectedBackground(background);
     localStorage.setItem('backgroundTheme', background); // Guardar preferencia
-    onBackgroundChange(background);
+    if (onBackgroundChange && typeof onBackgroundChange === 'function') {
+      onBackgroundChange(background);
+    }
   };
 
   return (

@@ -18,6 +18,11 @@ const Navbar = () => {
     // TODO: Aplicar el fondo a la app
   };
 
+  const handleDurationChange = (duration) => {
+    console.log('Duración cambiada a:', duration);
+    // TODO: Aplicar la duración al timer
+  };
+
   return (
     <>
     <nav 
@@ -68,6 +73,7 @@ const Navbar = () => {
       isOpen={ShowSettings} 
       onClose={handleCloseSettings}
       onBackgroundChange={handleBackgroundChange}
+      onDurationChange={handleDurationChange}
     />
   </>
   )
