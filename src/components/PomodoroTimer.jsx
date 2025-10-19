@@ -1,16 +1,25 @@
 import React, { useState, useEffect } from 'react'
+import { useSettings } from '../context/SettingsContext'
 
 // Constantes fuera del componente para evitar recreación en cada render
 const BREAK_TIME = 5 * 60  // 5 minutos (siempre fijo)
 const TOTAL_SESSIONS = 4
 
 const PomodoroTimer = () => {
-  const STUDY_TIME = 25 * 60 // 25 minutos
+  const { sessionDuration } = useSettings()
+  const STUDY_TIME = sessionDuration * 60 // Usar duración de configuración
 
   const [timeLeft, setTimeLeft] = useState(STUDY_TIME)
   const [isRunning, setIsRunning] = useState(false)
   const [sessionCount, setSessionCount] = useState(1)
   const [isBreak, setIsBreak] = useState(false)
+
+  // Actualizar tiempo cuando cambie la duración de sesión
+  useEffect(() => {
+    if (!isRunning && !isBreak) {
+      setTimeLeft(sessionDuration * 60)
+    }
+  }, [sessionDuration, isRunning, isBreak])
 
   // Formatear tiempo mm:ss
   const formatTime = (seconds) => {
@@ -46,7 +55,7 @@ const PomodoroTimer = () => {
           // Terminó break → siguiente sesión
           setIsBreak(false)
           setSessionCount(prev => prev + 1)
-          setTimeLeft(STUDY_TIME)
+          setTimeLeft(sessionDuration * 60)
         }
 
         return 0
@@ -54,7 +63,7 @@ const PomodoroTimer = () => {
     }, 1000)
 
     return () => clearInterval(timer)
-  }, [isRunning, isBreak, sessionCount, STUDY_TIME])
+  }, [isRunning, isBreak, sessionCount, sessionDuration, STUDY_TIME])
 
   const handleStartStop = () => setIsRunning(prev => !prev)
 
@@ -62,7 +71,7 @@ const PomodoroTimer = () => {
     setIsRunning(false)
     setSessionCount(1)
     setIsBreak(false)
-    setTimeLeft(STUDY_TIME)
+    setTimeLeft(sessionDuration * 60)
   }
 
   return (

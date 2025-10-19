@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 
 // Configuraciones predefinidas
 const DEFAULT_SETTINGS = {
@@ -8,8 +8,11 @@ const DEFAULT_SETTINGS = {
   soundType: 'bell'
 };
 
-// Hook personalizado para gestionar configuraciones
-export const useSettings = () => {
+// Crear el contexto
+const SettingsContext = createContext();
+
+// Provider del contexto
+export const SettingsProvider = ({ children }) => {
   const [settings, setSettings] = useState(DEFAULT_SETTINGS);
 
   // Cargar configuraciones guardadas al montar el componente
@@ -41,6 +44,7 @@ export const useSettings = () => {
 
   // Función para actualizar la duración de sesión
   const updateSessionDuration = (duration) => {
+    console.log('🔄 Cambiando duración a:', duration);
     setSettings(prev => ({
       ...prev,
       sessionDuration: duration
@@ -62,7 +66,7 @@ export const useSettings = () => {
     localStorage.removeItem('pomodoroSettings');
   };
 
-  return {
+  const value = {
     // Estado
     backgroundTheme: settings.backgroundTheme,
     sessionDuration: settings.sessionDuration,
@@ -75,6 +79,21 @@ export const useSettings = () => {
     updateSoundSettings,
     resetSettings
   };
+
+  return (
+    <SettingsContext.Provider value={value}>
+      {children}
+    </SettingsContext.Provider>
+  );
 };
 
-export default useSettings;
+// Hook personalizado para usar el contexto
+export const useSettings = () => {
+  const context = useContext(SettingsContext);
+  if (!context) {
+    throw new Error('useSettings debe ser usado dentro de SettingsProvider');
+  }
+  return context;
+};
+
+export default SettingsContext;

@@ -1,5 +1,5 @@
 import React from 'react';
-import useSettings from '../../../hooks/useSettings';
+import { useSettings } from '../../../context/SettingsContext';
 
 const BackgroundConfig = () => {
   const { backgroundTheme, updateBackgroundTheme } = useSettings();
