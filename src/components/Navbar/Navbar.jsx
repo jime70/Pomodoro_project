@@ -13,10 +13,6 @@ const Navbar = () => {
     setShowSettings(false);
   };
 
-  const handleBackgroundChange = (background) => {
-    console.log('Fondo cambiado a:', background);
-    // TODO: Aplicar el fondo a la app
-  };
 
   return (
     <>
@@ -67,7 +63,6 @@ const Navbar = () => {
     <SettingsModal 
       isOpen={ShowSettings} 
       onClose={handleCloseSettings}
-      onBackgroundChange={handleBackgroundChange}
     />
   </>
   )

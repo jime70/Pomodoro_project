@@ -1,21 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
+import useSettings from '../../../hooks/useSettings';
 
-const BackgroundConfig = ({ onBackgroundChange }) => {
-  const [selectedBackground, setSelectedBackground] = useState('autumn');
-
-  // Cargar preferencia guardada al montar el componente
-  useEffect(() => {
-    const savedBackground = localStorage.getItem('backgroundTheme');
-    if (savedBackground) {
-      setSelectedBackground(savedBackground);
-      onBackgroundChange(savedBackground); // Aplicar el fondo guardado
-    }
-  }, [onBackgroundChange]);
+const BackgroundConfig = () => {
+  const { backgroundTheme, updateBackgroundTheme } = useSettings();
 
   const handleBackgroundChange = (background) => {
-    setSelectedBackground(background);
-    localStorage.setItem('backgroundTheme', background); // Guardar preferencia
-    onBackgroundChange(background);
+    updateBackgroundTheme(background);
   };
 
   return (
@@ -41,10 +31,10 @@ const BackgroundConfig = ({ onBackgroundChange }) => {
           style={{
             flex: 1,
             padding: '16px',
-            border: `2px solid ${selectedBackground === 'autumn' ? '#10b981' : '#e5e7eb'}`,
+            border: `2px solid ${backgroundTheme === 'autumn' ? '#10b981' : '#e5e7eb'}`,
             borderRadius: '12px',
-            backgroundColor: selectedBackground === 'autumn' ? '#d1fae5' : 'white',
-            color: selectedBackground === 'autumn' ? '#10b981' : '#374151',
+            backgroundColor: backgroundTheme === 'autumn' ? '#d1fae5' : 'white',
+            color: backgroundTheme === 'autumn' ? '#10b981' : '#374151',
             cursor: 'pointer',
             fontSize: '14px',
             fontWeight: '500',
@@ -59,10 +49,10 @@ const BackgroundConfig = ({ onBackgroundChange }) => {
           style={{
             flex: 1,
             padding: '16px',
-            border: `2px solid ${selectedBackground === 'storm' ? '#10b981' : '#e5e7eb'}`,
+            border: `2px solid ${backgroundTheme === 'storm' ? '#10b981' : '#e5e7eb'}`,
             borderRadius: '12px',
-            backgroundColor: selectedBackground === 'storm' ? '#d1fae5' : 'white',
-            color: selectedBackground === 'storm' ? '#10b981' : '#374151',
+            backgroundColor: backgroundTheme === 'storm' ? '#d1fae5' : 'white',
+            color: backgroundTheme === 'storm' ? '#10b981' : '#374151',
             cursor: 'pointer',
             fontSize: '14px',
             fontWeight: '500',
