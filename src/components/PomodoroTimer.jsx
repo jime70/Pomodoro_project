@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react'
 
+// Constantes fuera del componente para evitar recreación en cada render
+const BREAK_TIME = 5 * 60  // 5 minutos (siempre fijo)
+const TOTAL_SESSIONS = 4
+
 const PomodoroTimer = () => {
   const STUDY_TIME = 25 * 60 // 25 minutos
-  const BREAK_TIME = 5 * 60  // 5 minutos
-  const TOTAL_SESSIONS = 4
 
   const [timeLeft, setTimeLeft] = useState(STUDY_TIME)
   const [isRunning, setIsRunning] = useState(false)
@@ -52,7 +54,7 @@ const PomodoroTimer = () => {
     }, 1000)
 
     return () => clearInterval(timer)
-  }, [isRunning, isBreak, sessionCount])
+  }, [isRunning, isBreak, sessionCount, STUDY_TIME])
 
   const handleStartStop = () => setIsRunning(prev => !prev)
 
