@@ -1,9 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react'
-import { useAuth } from '../../context/AuthContext'
-import { logout as logoutService } from '../../services/authService.js'
 
-const AuthDropdown = () => {
-  const { user, setUser, setToken } = useAuth()
+const GuestAuthDropdown = ({ onOpenLogin, onOpenRegister }) => {
   const [isOpen, setIsOpen] = useState(false)
   const dropdownRef = useRef(null)
 
@@ -28,20 +25,19 @@ const AuthDropdown = () => {
     setIsOpen(!isOpen)
   }
 
-  const handleLogout = async () => {
-    // Llamar al servicio de logout
-    await logoutService()
-    
-    // Actualizar el contexto (limpiar estado)
-    setUser(null)
-    setToken(null)
-    
+  const handleLoginClick = () => {
     setIsOpen(false)
+    if (onOpenLogin) onOpenLogin()
+  }
+
+  const handleRegisterClick = () => {
+    setIsOpen(false)
+    if (onOpenRegister) onOpenRegister()
   }
 
   return (
     <div ref={dropdownRef} style={{ position: 'relative' }}>
-      {/* Botón que muestra el nombre del usuario */}
+      {/* Botón que muestra "Acceder" o "Usuario" */}
       <button 
         onClick={handleToggle}
         style={{
@@ -65,7 +61,7 @@ const AuthDropdown = () => {
           }
         }}
       >
-        {user?.nombre || user?.email || 'Usuario'}
+        Acceder
         <span style={{ fontSize: '12px' }}>▼</span>
       </button>
 
@@ -85,12 +81,9 @@ const AuthDropdown = () => {
             zIndex: 100
           }}
         >
-          {/* Opción: Perfil (placeholder) */}
+          {/* Opción: Login */}
           <button
-            onClick={() => {
-              setIsOpen(false)
-              // TODO: Navegar a página de perfil
-            }}
+            onClick={handleLoginClick}
             style={{
               width: '100%',
               padding: '12px 16px',
@@ -105,15 +98,12 @@ const AuthDropdown = () => {
             onMouseEnter={(e) => e.target.style.backgroundColor = '#f3f4f6'}
             onMouseLeave={(e) => e.target.style.backgroundColor = 'transparent'}
           >
-            Perfil
+            Login
           </button>
 
-          {/* Opción: Stats */}
+          {/* Opción: Registrarse */}
           <button
-            onClick={() => {
-              setIsOpen(false)
-              // TODO: Navegar a página de estadísticas
-            }}
+            onClick={handleRegisterClick}
             style={{
               width: '100%',
               padding: '12px 16px',
@@ -129,28 +119,7 @@ const AuthDropdown = () => {
             onMouseEnter={(e) => e.target.style.backgroundColor = '#f3f4f6'}
             onMouseLeave={(e) => e.target.style.backgroundColor = 'transparent'}
           >
-            Stats
-          </button>
-
-          {/* Opción: Logout */}
-          <button
-            onClick={handleLogout}
-            style={{
-              width: '100%',
-              padding: '12px 16px',
-              textAlign: 'left',
-              border: 'none',
-              backgroundColor: 'transparent',
-              cursor: 'pointer',
-              fontSize: '14px',
-              color: '#dc2626',
-              transition: 'background-color 0.2s',
-              borderTop: '1px solid #e5e7eb'
-            }}
-            onMouseEnter={(e) => e.target.style.backgroundColor = '#fee2e2'}
-            onMouseLeave={(e) => e.target.style.backgroundColor = 'transparent'}
-          >
-            Logout
+            Registrarse
           </button>
         </div>
       )}
@@ -158,4 +127,5 @@ const AuthDropdown = () => {
   )
 }
 
-export default AuthDropdown
+export default GuestAuthDropdown
+

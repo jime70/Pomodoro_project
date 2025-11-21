@@ -1,12 +1,12 @@
 import React, { createContext, useContext, useState, useEffect } from 'react'
-import { authAPI } from '../services/api.js'
+import { checkAuth as checkAuthService } from '../services/authService.js'
 
 // Crear el contexto de autenticación
 const AuthContext = createContext()
 
 // Provider que envuelve toda la aplicación
 export const AuthProvider = ({ children }) => {
-  // Estados globales
+  // Estados globales (solo estado, no lógica de negocio)
   const [user, setUser] = useState(null)
   const [token, setToken] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -14,120 +14,28 @@ export const AuthProvider = ({ children }) => {
   // Verificar si hay usuario autenticado
   const isAuthenticated = !!user && !!token
 
-  // Función de Login
-  const login = async (email, password) => {
-    try {
-      setLoading(true)
-      
-      // Llamar al backend
-      const response = await authAPI.login({ email, password })
-      
-      // Guardar token y usuario en localStorage
-      localStorage.setItem('token', response.token)
-      localStorage.setItem('user', JSON.stringify(response))
-      
-      // Actualizar estado
-      setToken(response.token)
-      setUser(response)
-      
-      return { success: true }
-    } catch (error) {
-      console.error('Error en login:', error)
-      return { 
-        success: false, 
-        error: error.error || 'Error al iniciar sesión' 
-      }
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  // Función de Registro
-  const register = async (nombre, email, password) => {
-    try {
-      setLoading(true)
-      
-      // Llamar al backend
-      const response = await authAPI.register({ nombre, email, password })
-      
-      // Guardar token y usuario en localStorage
-      localStorage.setItem('token', response.token)
-      localStorage.setItem('user', JSON.stringify(response))
-      
-      // Actualizar estado
-      setToken(response.token)
-      setUser(response)
-      
-      return { success: true }
-    } catch (error) {
-      console.error('Error en registro:', error)
-      return { 
-        success: false, 
-        error: error.error || 'Error al registrarse' 
-      }
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  // Función de Logout
-  const logout = async () => {
-    try {
-      // Llamar al backend para invalidar el token
-      await authAPI.logout()
-    } catch (error) {
-      console.error('Error en logout:', error)
-    } finally {
-      // Limpiar localStorage
-      localStorage.removeItem('token')
-      localStorage.removeItem('user')
-      
-      // Limpiar estado
-      setToken(null)
-      setUser(null)
-    }
-  }
-
-  // Verificar token al cargar la app
-  const checkAuth = async () => {
-    try {
-      setLoading(true)
-      
-      // Leer token del localStorage
-      const storedToken = localStorage.getItem('token')
-      const storedUser = localStorage.getItem('user')
-      
-      if (storedToken && storedUser) {
-        // Verificar token con el backend
-        await authAPI.getMe()
-        
-        // Actualizar estado (usar datos del localStorage)
-        setToken(storedToken)
-        setUser(JSON.parse(storedUser))
-      } else {
-        // No hay token, limpiar estado
-        setToken(null)
-        setUser(null)
-      }
-    } catch (error) {
-      console.error('Error verificando autenticación:', error)
-      
-      // Token inválido o expirado, limpiar todo
-      localStorage.removeItem('token')
-      localStorage.removeItem('user')
-      setToken(null)
-      setUser(null)
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  // Verificar autenticación al montar el componente
+  // Verificar autenticación al cargar la app
   useEffect(() => {
-    checkAuth()
+    const verifyAuth = async () => {
+      setLoading(true)
+      const result = await checkAuthService()
+      
+      if (result.success) {
+        setUser(result.user)
+        setToken(result.token)
+      } else {
+        setUser(null)
+        setToken(null)
+      }
+      
+      setLoading(false)
+    }
+    
+    verifyAuth()
   }, [])
 
   // Valores que se exponen a todos los componentes
+  // Solo estado y setters, NO funciones de login/logout
   const value = {
     // Estado
     user,
@@ -135,11 +43,9 @@ export const AuthProvider = ({ children }) => {
     isAuthenticated,
     loading,
     
-    // Funciones
-    login,
-    register,
-    logout,
-    checkAuth
+    // Setters para que los componentes puedan actualizar el estado
+    setUser,
+    setToken
   }
 
   return (
@@ -159,5 +65,3 @@ export const useAuth = () => {
   
   return context
 }
-
-export default AuthContext

@@ -1,17 +1,18 @@
 import React, { useState } from 'react'
 import ConfigButton from './ConfigButton/ConfigButton'
 import SettingsModal from './Modals/SettingsModal'
+import AuthSection from './AuthSection'
 
 const Navbar = () => {
-  const [ShowSettings, setShowSettings] = useState(false); // TODO: Usar para mostrar modal de configuración
+  const [ShowSettings, setShowSettings] = useState(false)
 
   const handleOpenSettings = () => {
-    setShowSettings(true);
-  };
+    setShowSettings(true)
+  }
 
   const handleCloseSettings = () => {
-    setShowSettings(false);
-  };
+    setShowSettings(false)
+  }
 
 
   return (
@@ -39,21 +40,9 @@ const Navbar = () => {
           {/* Menú de navegación */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
             <ConfigButton onOpenSettings={handleOpenSettings} />
-            <SettingsModal isOpen={ShowSettings} onClose={handleCloseSettings} />
             
-            {/* Dropdown de Autenticación */}
-            <button 
-              style={{
-                backgroundColor: 'rgba(255, 255, 255, 0.2)',
-                color: 'white',
-                padding: '8px 16px',
-                borderRadius: '8px',
-                border: 'none',
-                cursor: 'pointer'
-              }}
-            >
-              Usuario
-            </button>
+            {/* Sección de Autenticación */}
+            <AuthSection />
           </div>
         </div>
       </div>
