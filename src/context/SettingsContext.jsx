@@ -5,7 +5,11 @@ const DEFAULT_SETTINGS = {
   backgroundTheme: 'autumn',
   sessionDuration: 25,
   soundEnabled: true,
-  soundType: 'bell'
+  soundType: 'bell',
+  // Configuración de música de fondo
+  musicEnabled: false,        // Por defecto desactivada
+  musicType: 'piano-romantic', // Tipo de música por defecto
+  musicVolume: 0.5            // Volumen por defecto (50%)
 };
 
 // Crear el contexto
@@ -60,6 +64,17 @@ export const SettingsProvider = ({ children }) => {
     }));
   };
 
+  // Función para actualizar configuración de música de fondo
+  const updateMusicSettings = (musicEnabled, musicType = 'piano-romantic', musicVolume = 0.5) => {
+    console.log('🔄 Actualizando música:', { musicEnabled, musicType, musicVolume });
+    setSettings(prev => ({
+      ...prev,
+      musicEnabled,
+      musicType,
+      musicVolume
+    }));
+  };
+
   // Función para resetear configuraciones
   const resetSettings = () => {
     setSettings(DEFAULT_SETTINGS);
@@ -72,11 +87,15 @@ export const SettingsProvider = ({ children }) => {
     sessionDuration: settings.sessionDuration,
     soundEnabled: settings.soundEnabled,
     soundType: settings.soundType,
+    musicEnabled: settings.musicEnabled,
+    musicType: settings.musicType,
+    musicVolume: settings.musicVolume,
     
     // Funciones
     updateBackgroundTheme,
     updateSessionDuration,
     updateSoundSettings,
+    updateMusicSettings,
     resetSettings
   };
 
