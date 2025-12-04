@@ -1,129 +1,61 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import { useSettings } from '../context/SettingsContext'
-
-// Constantes fuera del componente para evitar recreación en cada render
-const BREAK_TIME = 5 * 60  // 5 minutos (siempre fijo)
-const TOTAL_SESSIONS = 4
+import { usePomodoroTimer } from '../hooks/usePomodoroTimer'
+import AlarmPlayer from './Audio/AlarmPlayer'
+import BackgroundMusicPlayer from './Audio/BackgroundMusicPlayer'
+import TimerDisplay from './Timer/TimerDisplay'
+import TimerControls from './Timer/TimerControls'
 
 const PomodoroTimer = () => {
   const { sessionDuration } = useSettings()
-  const STUDY_TIME = sessionDuration * 60 // Usar duración de configuración
-
-  const [timeLeft, setTimeLeft] = useState(STUDY_TIME)
-  const [isRunning, setIsRunning] = useState(false)
-  const [sessionCount, setSessionCount] = useState(1)
-  const [isBreak, setIsBreak] = useState(false)
-
-  // Actualizar tiempo cuando cambie la duración de sesión
-  useEffect(() => {
-    if (!isRunning && !isBreak) {
-      setTimeLeft(sessionDuration * 60)
-    }
-  }, [sessionDuration, isRunning, isBreak])
-
-  // Formatear tiempo mm:ss
-  const formatTime = (seconds) => {
-    const m = Math.floor(seconds / 60)
-    const s = seconds % 60
-    return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`
-  }
-
-  // Efecto principal del temporizador
-  useEffect(() => {
-    if (!isRunning) return
-
-    const timer = setInterval(() => {
-      setTimeLeft(prev => {
-        if (prev > 0) return prev - 1
-
-        // --- Cuando llega a 0 ---
-        clearInterval(timer)
-
-        if (!isBreak) {
-          // Terminó sesión de trabajo
-          if (sessionCount < TOTAL_SESSIONS) {
-            setIsBreak(true)
-            setTimeLeft(BREAK_TIME)
-          } else {
-            // Ciclo completo terminado
-            setIsRunning(false)
-            setSessionCount(1)
-            setIsBreak(false)
-            setTimeLeft(STUDY_TIME)
-          }
-        } else {
-          // Terminó break → siguiente sesión
-          setIsBreak(false)
-          setSessionCount(prev => prev + 1)
-          setTimeLeft(sessionDuration * 60)
-        }
-
-        return 0
-      })
-    }, 1000)
-
-    return () => clearInterval(timer)
-  }, [isRunning, isBreak, sessionCount, sessionDuration, STUDY_TIME])
-
-  const handleStartStop = () => setIsRunning(prev => !prev)
-
-  const handleReset = () => {
-    setIsRunning(false)
-    setSessionCount(1)
-    setIsBreak(false)
-    setTimeLeft(sessionDuration * 60)
-  }
+  
+  const {
+    timeLeft,
+    isRunning,
+    sessionCount,
+    isBreak,
+    shouldPlayAlarm,
+    isWaitingForAlarm,
+    handleStartStop,
+    handleReset,
+    handleAlarmComplete
+  } = usePomodoroTimer(sessionDuration)
 
   return (
-    <div style={{
-      backgroundColor: 'rgba(255, 255, 255, 0.1)',
-      borderRadius: '10px',
-      padding: '30px',
-      textAlign: 'center',
-      color: 'white',
-      maxWidth: '400px',
-      width: '100%'
-    }}>
-      <h1 style={{ marginBottom: '20px', fontSize: '24px' }}>
-        {isBreak ? 'Descanso' : `Sesión ${sessionCount} de ${TOTAL_SESSIONS}`}
-      </h1>
+    <>
+      <AlarmPlayer 
+        shouldPlay={shouldPlayAlarm}
+        onPlayComplete={handleAlarmComplete}
+      />
       
-      <div style={{ fontSize: '48px', fontWeight: 'bold', marginBottom: '20px' }}>
-        {formatTime(timeLeft)}
-      </div>
+      <BackgroundMusicPlayer
+        isStudySession={isRunning && !isBreak}
+        isRunning={isRunning}
+      />
       
-      <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
-        <button
-          onClick={handleStartStop}
-          style={{
-            padding: '10px 20px',
-            backgroundColor: isRunning ? '#ef4444' : '#22c55e',
-            color: 'white',
-            border: 'none',
-            borderRadius: '5px',
-            cursor: 'pointer',
-            fontSize: '16px'
-          }}
-        >
-          {isRunning ? 'Pausar' : 'Iniciar'}
-        </button>
+      <div style={{
+        backgroundColor: 'rgba(255, 255, 255, 0.1)',
+        borderRadius: '10px',
+        padding: '30px',
+        textAlign: 'center',
+        color: 'white',
+        maxWidth: '400px',
+        width: '100%'
+      }}>
+        <TimerDisplay 
+          timeLeft={timeLeft}
+          sessionCount={sessionCount}
+          isBreak={isBreak}
+        />
         
-        <button
-          onClick={handleReset}
-          style={{
-            padding: '10px 20px',
-            backgroundColor: '#6b7280',
-            color: 'white',
-            border: 'none',
-            borderRadius: '5px',
-            cursor: 'pointer',
-            fontSize: '16px'
-          }}
-        >
-          Resetear
-        </button>
+        <TimerControls
+          isRunning={isRunning}
+          isWaitingForAlarm={isWaitingForAlarm}
+          onStartStop={handleStartStop}
+          onReset={handleReset}
+        />
       </div>
-    </div>
+    </>
   )
 }
 

@@ -1,8 +1,8 @@
 // SettingsModal.jsx - Modal de configuración completo
-// TODO: Implementar modal que integre BackgroundConfig, TimeConfig y MusicConfig
 import React from "react";
 import BackgroundConfig from '../ConfigButton/BackgroundConfig';
 import TimeConfig from '../ConfigButton/TimeConfig';
+import MusicConfig from '../ConfigButton/MusicConfig';
 
 const SettingsModal = ({ isOpen, onClose }) => {
   //Si el modal no está abierto, no se muestra
@@ -72,11 +72,7 @@ const SettingsModal = ({ isOpen, onClose }) => {
         <div>
           <BackgroundConfig />
           <TimeConfig />
-          
-          {/* Aquí van las otras configuraciones... */}
-          <p style={{ textAlign: 'center', color: '#6b7280', marginTop: '32px' }}>
-            Más configuraciones próximamente...
-          </p>
+          <MusicConfig />
         </div>
       </div>
     </div>
