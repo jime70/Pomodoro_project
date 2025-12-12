@@ -181,3 +181,6 @@ Para confirmar el bug, verificar:
 
 **ALTA** - Este bug afecta la funcionalidad principal de la aplicación y causa una mala experiencia de usuario. Debe corregirse antes de cualquier despliegue a producción.
 
+
+
+

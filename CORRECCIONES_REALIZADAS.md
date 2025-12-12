@@ -139,3 +139,6 @@ Para verificar que los bugs están corregidos:
 - Si en el futuro se necesitan cambiar los tiempos de break o agregar más configuraciones, se deben actualizar tanto los estados como los refs correspondientes
 - Los refs se sincronizan automáticamente con los estados a través de `useEffect`, pero es importante mantener esta sincronización si se agregan nuevos estados relacionados
 
+
+
+

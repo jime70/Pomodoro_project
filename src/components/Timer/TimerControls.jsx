@@ -40,3 +40,6 @@ const TimerControls = ({ isRunning, isWaitingForAlarm, onStartStop, onReset }) =
 
 export default TimerControls
 
+
+
+

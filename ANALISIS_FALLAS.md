@@ -354,3 +354,6 @@ vs
 *Análisis realizado el: $(date)*
 *Archivos revisados: Frontend y Backend completos*
 
+
+
+
